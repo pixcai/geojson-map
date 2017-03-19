@@ -1,6 +1,10 @@
-var parseGeoJSON = require('./lib/parser')
+var parseGeoJson = require('./lib/parser')
 var Renderer = require('./src/renderer')
 
-module.exports = function (geoJSON, options) {
-	return new Renderer(parseGeoJSON(geoJSON), options)
+function geoJsonMap(geoJSON, options) {
+	return new Renderer(parseGeoJson(geoJSON), options)
 }
+
+geoJsonMap.MERCATOR = 0
+
+module.exports = geoJsonMap
