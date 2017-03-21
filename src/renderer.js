@@ -93,7 +93,7 @@ Renderer.prototype.render = function () {
 			height: 2, 
 			fontSize: 12, 
 			fontFamily: 'courier', 
-			color: 'red', 
+			color: 'blue', 
 			backgroundColor: 'red'
 		}, markers.style)
 
