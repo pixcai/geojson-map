@@ -103,14 +103,14 @@ Renderer.prototype.render = function () {
 			var x = marker.point.x
 			var y = marker.point.y
 
-			if (markers.show === 'marker' || markers.show) {
+			if (markers.show === 'marker' || markers.show === true) {
 				context.fillStyle = style.backgroundColor
 				context.beginPath()
 				context.arc(x, y, Math.min(style.width, style.height), 0, Math.PI * 2)
 				context.fill()
 			}
 			if ((markers.show === 'label' && typeof marker.label === 'string') 
-				|| markers.show) {
+				|| markers.show === true) {
 				context.fillStyle = style.color
 				context.fillText(marker.label, x + 4, y + style.fontSize / 2)
 			}
