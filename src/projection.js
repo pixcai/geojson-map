@@ -1,18 +1,31 @@
 var PROJECTIONS = {}
 
 function Projection(type, options) {
-	this.projection = PROJECTIONS[type]
-	this.options = Object.assign({
-		zoom: 0, 
-		width: 0, 
-		height: 0
-	}, options)
+	this.transform = PROJECTIONS[type]
+	this.options = options
 }
 
-Projection.MERCATOR = 0
+Projection.MERCATOR = 1
+
+PROJECTIONS[Projection.MERCATOR] = function (coordinate, options) {
+	var point = {}
+
+	options = Object.assign({
+		radius: 6378137, 
+		max: 85.0511287798, 
+		radians: Math.PI / 180
+	}, options)
+
+	point.x = options.radius * coordinate[0] * options.radians
+	point.y = Math.max(Math.min(options.max, coordinate[1]), -options.max)
+	point.y = point.y * options.radians
+	point.y = options.radius * Math.log(Math.tan((Math.PI / 4) + (point.y / 2)))
+
+	return point
+}
 
 Projection.prototype.projectCoordinate = function (coordinate) {
-	var point = this.projection(coordinate)
+	var point = this.transform(coordinate)
 	var scale = Math.pow(2, parseInt(this.options.zoom, 10))
 
 	point.x = point.x * scale
@@ -37,23 +50,6 @@ Projection.prototype.coordinateToPoint = function (coordinate, boundingRect) {
 		point.x += (this.options.width - width * yScale) / 2
 		point.y = (boundingRect.yMax - point.y) * yScale
 	}
-
-	return point
-}
-
-PROJECTIONS[Projection.MERCATOR] = function (coordinate, options) {
-	var point = {}
-
-	options = Object.assign({
-		radius: 6378137, 
-		max: 85.0511287798, 
-		radians: Math.PI / 180
-	}, options)
-
-	point.x = options.radius * coordinate[0] * options.radians
-	point.y = Math.max(Math.min(options.max, coordinate[1]), -options.max)
-	point.y = point.y * options.radians
-	point.y = options.radius * Math.log(Math.tan((Math.PI / 4) + (point.y / 2)))
 
 	return point
 }

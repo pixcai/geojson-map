@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "start": "python -m SimpleHTTPServer 8002"
+    "start": "python -m SimpleHTTPServer"
   },
   "repository": {
     "type": "git",

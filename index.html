@@ -14,10 +14,12 @@
 		$.get('china.json', function (geoJson) {
 			var map = geoJsonMap(geoJson, {
 				el: document.getElementById('map'), 
-				showMarker: true, 
-				projection: {
-					type: geoJsonMap.MERCATOR, 
-					zoom: 0
+				markers: {
+					show: true, 
+					data: [], 
+					style: {
+						color: 'blue'
+					}
 				}
 			})
 			map.render()
