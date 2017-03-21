@@ -14,6 +14,9 @@
 		$.get('china.json', function (geoJson) {
 			var map = geoJsonMap(geoJson, {
 				el: document.getElementById('map'), 
+				style: {
+					backgroundColor: '#ececec'
+				}, 
 				markers: {
 					show: true, 
 					data: [], 
