@@ -4,6 +4,10 @@ function Renderer(regions, options) {
 	this.regions = []
 	this.options = {}
 	this.markers = []
+
+	if (!(options && (options.el instanceof HTMLCanvasElement))) {
+		throw new Error('A canvas element required for `el` field in options. ')
+	}
 	this.context = options.el.getContext('2d')
 
 	if (!options.projection) {
@@ -49,12 +53,24 @@ function Renderer(regions, options) {
 
 	if (this.options.markers && Array.isArray(this.options.markers.data)) {
 		var markers = this.options.markers.data.filter(function (marker) {
-			return (
-				typeof marker === 'object' 
-				&& marker.point 
-				&& typeof marker.point.x === 'number' 
-				&& typeof marker.point.y === 'number'
-			)
+			var coordinate = null
+
+			if (Array.isArray(marker) && marker.length > 1) {
+				if (typeof marker[0] === 'number' && typeof marker[1] === 'number') {
+					coordinate = marker.slice(0, 2)
+				}
+			}
+			if (typeof marker === 'object' && Array.isArray(marker.point)) {
+				if (marker.point.length > 1) {
+					coordinate = marker.point.slice(0, 2)
+				}
+			}
+			if (coordinate) {
+				marker.point = projection.coordinateToPoint(coordinate, boundingRect)
+				return true
+			}
+
+			return false
 		})
 
 		this.markers = this.markers.concat(markers)
@@ -109,10 +125,11 @@ Renderer.prototype.render = function () {
 				context.arc(x, y, Math.min(style.width, style.height), 0, Math.PI * 2)
 				context.fill()
 			}
-			if ((markers.show === 'label' && typeof marker.label === 'string') 
-				|| markers.show === true) {
-				context.fillStyle = style.color
-				context.fillText(marker.label, x + 4, y + style.fontSize / 2)
+			if (markers.show === 'label' || markers.show === true) {
+				if (typeof marker.label === 'string') {
+					context.fillStyle = style.color
+					context.fillText(marker.label, x + 4, y + style.fontSize / 2)
+				}
 			}
 		})
 	}
